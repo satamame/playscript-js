@@ -1,0 +1,38 @@
+{
+  "name": "playscript-js",
+  "version": "0.1.0",
+  "description": "A TypeScript library for parsing and rendering Japanese Fountain (JFTN) screenplay format",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "fountain",
+    "screenplay",
+    "japanese",
+    "jftn",
+    "parser",
+    "typescript"
+  ],
+  "author": "satamame <satax@nifty.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
