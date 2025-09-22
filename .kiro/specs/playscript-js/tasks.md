@@ -6,13 +6,16 @@
   - コア型定義 (Script、ScriptElement、ScriptMetadata等) の実装
   - _Requirements: 1.4_
 
-- [ ] 2. Python 互換データ構造の実装
+- [x] 2. Python 互換データ構造の実装
   - PScLineType 列挙型の実装 (Python の PScLineType と同じ値と名前)
   - PScLine クラスの実装 (type、name、text 属性と fromText メソッド)
   - PSc クラスの実装 (title、author、chars、lines 属性と fromLines メソッド)
   - _Requirements: 1.1, 1.4_
 
-- [ ] 3. JSON シリアライゼーション機能の実装
+- [x] 3. JSON シリアライゼーション機能の実装
+
+
+
   - PScLine の toJSON/fromJSON メソッドの実装 (Python 互換形式)
   - PSc の toJSON/fromJSON メソッドの実装 (Python 互換形式)
   - linesFromTypesAndTexts ユーティリティ関数の実装

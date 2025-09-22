@@ -1,4 +1,4 @@
-import { Script, ScriptElement } from './types';
+import { PSc, PScLine, PScLineType } from './types';
 
 export interface RenderOptions {
   writingMode?: 'horizontal' | 'vertical';
@@ -25,21 +25,21 @@ export class ScriptRenderer {
     };
   }
 
-  render(script: Script, options?: RenderOptions): string {
+  render(script: PSc, options?: RenderOptions): string {
     const mergedOptions = { ...this.options, ...options };
     return this.renderToHTML(script, mergedOptions);
   }
 
-  renderToHTML(script: Script, options?: RenderOptions): string {
+  renderToHTML(script: PSc, options?: RenderOptions): string {
     // Minimal implementation - will be expanded in later tasks
     const css = options?.includeCSS ? this.generateCSS(options) : '';
-    const content = script.elements.map(element => this.renderElement(element)).join('\n');
+    const content = script.lines.map((element: PScLine) => this.renderElement(element)).join('\n');
     
     return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${script.metadata.title || 'Script'}</title>
+  <title>${script.title || 'Script'}</title>
   ${css ? `<style>${css}</style>` : ''}
 </head>
 <body>
@@ -50,9 +50,10 @@ export class ScriptRenderer {
 </html>`;
   }
 
-  renderElement(element: ScriptElement): string {
+  renderElement(element: PScLine): string {
     // Minimal implementation - will be expanded in later tasks
-    return `<div class="${element.type}">${element.content}</div>`;
+    const typeName = Object.keys(PScLineType)[Object.values(PScLineType).indexOf(element.type)];
+    return `<div class="psc-line-${typeName?.toLowerCase() || 'unknown'}">${element.text || ''}</div>`;
   }
 
   generateCSS(options?: RenderOptions): string {

@@ -1,7 +1,7 @@
-import { Script, ScriptElement, ScriptMetadata, ElementType, ParseResult, ParseError } from './types';
+import { PSc, PScLine, PScLineType, ParseResult, ParseError } from './types';
 
 interface ParsingContext {
-  lastElementType: ElementType | null;
+  lastElementType: PScLineType | null;
   afterEmptyLine: boolean;
   afterEndmark: boolean;
 }
@@ -19,12 +19,8 @@ export class JftnParser {
 
   parse(text: string): ParseResult {
     try {
-      const script: Script = {
-        metadata: this.parseMetadata(text),
-        elements: [],
-        format: 'jftn',
-        rawText: text
-      };
+      // Minimal implementation - will be expanded in later tasks
+      const script = new PSc();
 
       return {
         success: true,
@@ -41,21 +37,17 @@ export class JftnParser {
     }
   }
 
-  parseElement(line: string, lineNumber: number, previousElement?: ScriptElement): ScriptElement | null {
+  parseElement(line: string, lineNumber: number, previousElement?: PScLine): PScLine | null {
     // Minimal implementation - will be expanded in later tasks
-    return {
-      type: 'comment',
-      content: line,
-      lineNumber
-    };
+    return new PScLine(PScLineType.COMMENT, undefined, line);
   }
 
-  parseMetadata(text: string): ScriptMetadata {
+  parseMetadata(lines: PScLine[]): { title: string; author: string; chars: string[] } {
     // Minimal implementation - will be expanded in later tasks
-    return {};
+    return { title: '', author: '', chars: [] };
   }
 
-  updateContext(element: ScriptElement, isEmpty: boolean): void {
+  updateContext(element: PScLine, isEmpty: boolean): void {
     // Minimal implementation - will be expanded in later tasks
     this.context.lastElementType = element.type;
     this.context.afterEmptyLine = isEmpty;
