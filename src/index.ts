@@ -3,6 +3,8 @@
  */
 
 export * from './types';
+export * from './rules';
+export * from './utils';
 
 // Placeholder exports for future implementation
 export { JftnParser } from './parser';

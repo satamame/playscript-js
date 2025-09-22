@@ -21,7 +21,7 @@ export class ScriptRenderer {
       lineHeight: 1.6,
       theme: 'light',
       includeCSS: true,
-      ...options
+      ...options,
     };
   }
 
@@ -33,8 +33,10 @@ export class ScriptRenderer {
   renderToHTML(script: PSc, options?: RenderOptions): string {
     // Minimal implementation - will be expanded in later tasks
     const css = options?.includeCSS ? this.generateCSS(options) : '';
-    const content = script.lines.map((element: PScLine) => this.renderElement(element)).join('\n');
-    
+    const content = script.lines
+      .map((element: PScLine) => this.renderElement(element))
+      .join('\n');
+
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +54,10 @@ export class ScriptRenderer {
 
   renderElement(element: PScLine): string {
     // Minimal implementation - will be expanded in later tasks
-    const typeName = Object.keys(PScLineType)[Object.values(PScLineType).indexOf(element.type)];
+    const typeName =
+      Object.keys(PScLineType)[
+        Object.values(PScLineType).indexOf(element.type)
+      ];
     return `<div class="psc-line-${typeName?.toLowerCase() || 'unknown'}">${element.text || ''}</div>`;
   }
 

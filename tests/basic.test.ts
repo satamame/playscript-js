@@ -20,7 +20,7 @@ describe('Basic functionality', () => {
   test('parser returns valid result structure', () => {
     const parser = new JftnParser();
     const result = parser.parse('test content');
-    
+
     expect(result).toHaveProperty('success');
     expect(result).toHaveProperty('errors');
     expect(result).toHaveProperty('warnings');

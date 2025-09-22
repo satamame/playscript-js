@@ -2,7 +2,12 @@
  * Tests for Python playscript package compatibility
  */
 
-import { PSc, PScLine, PScLineType, linesFromTypesAndTexts } from '../src/types';
+import {
+  PSc,
+  PScLine,
+  PScLineType,
+  linesFromTypesAndTexts,
+} from '../src/types';
 
 describe('Python Compatibility', () => {
   describe('PScLineType', () => {
@@ -56,7 +61,11 @@ describe('Python Compatibility', () => {
     });
 
     it('should create dialogue lines', () => {
-      const dialogueLine = new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは');
+      const dialogueLine = new PScLine(
+        PScLineType.DIALOGUE,
+        '太郎',
+        'こんにちは'
+      );
       expect(dialogueLine.type).toBe(PScLineType.DIALOGUE);
       expect(dialogueLine.name).toBe('太郎');
       expect(dialogueLine.text).toBe('こんにちは');
@@ -64,13 +73,19 @@ describe('Python Compatibility', () => {
 
     it('should enforce required fields', () => {
       // CHARACTER requires name
-      expect(() => new PScLine(PScLineType.CHARACTER)).toThrow('Argument "name" is required');
-      
+      expect(() => new PScLine(PScLineType.CHARACTER)).toThrow(
+        'Argument "name" is required'
+      );
+
       // DIALOGUE requires name
-      expect(() => new PScLine(PScLineType.DIALOGUE)).toThrow('Argument "name" is required');
-      
+      expect(() => new PScLine(PScLineType.DIALOGUE)).toThrow(
+        'Argument "name" is required'
+      );
+
       // TITLE requires text
-      expect(() => new PScLine(PScLineType.TITLE)).toThrow('Argument "text" is required');
+      expect(() => new PScLine(PScLineType.TITLE)).toThrow(
+        'Argument "text" is required'
+      );
     });
 
     describe('fromText', () => {
@@ -89,7 +104,10 @@ describe('Python Compatibility', () => {
       });
 
       it('should parse dialogue lines', () => {
-        const line1 = PScLine.fromText(PScLineType.DIALOGUE, '太郎「こんにちは」');
+        const line1 = PScLine.fromText(
+          PScLineType.DIALOGUE,
+          '太郎「こんにちは」'
+        );
         expect(line1.name).toBe('太郎');
         expect(line1.text).toBe('こんにちは');
 
@@ -107,7 +125,10 @@ describe('Python Compatibility', () => {
         expect(titleLine.text).toBe('台本のタイトル');
         expect(titleLine.name).toBeUndefined();
 
-        const directionLine = PScLine.fromText(PScLineType.DIRECTION, '舞台は学校の教室');
+        const directionLine = PScLine.fromText(
+          PScLineType.DIRECTION,
+          '舞台は学校の教室'
+        );
         expect(directionLine.text).toBe('舞台は学校の教室');
       });
     });
@@ -121,7 +142,7 @@ describe('Python Compatibility', () => {
           class: 'PScLine',
           type: 'DIALOGUE',
           name: '太郎',
-          text: 'こんにちは'
+          text: 'こんにちは',
         });
       });
 
@@ -130,7 +151,7 @@ describe('Python Compatibility', () => {
           class: 'PScLine',
           type: 'DIALOGUE',
           name: '太郎',
-          text: 'こんにちは'
+          text: 'こんにちは',
         };
 
         const line = PScLine.fromJSON(json);
@@ -142,7 +163,7 @@ describe('Python Compatibility', () => {
       it('should handle lines without optional fields', () => {
         const emptyLineJson = {
           class: 'PScLine',
-          type: 'EMPTY'
+          type: 'EMPTY',
         };
 
         const line = PScLine.fromJSON(emptyLineJson);
@@ -166,14 +187,14 @@ describe('Python Compatibility', () => {
       const lines = [
         new PScLine(PScLineType.TITLE, undefined, 'テスト台本'),
         new PScLine(PScLineType.AUTHOR, undefined, 'テスト作者'),
-        new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは')
+        new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは'),
       ];
 
       const script = new PSc({
         title: 'テスト台本',
         author: 'テスト作者',
         chars: ['太郎', '花子'],
-        lines
+        lines,
       });
 
       expect(script.title).toBe('テスト台本');
@@ -183,9 +204,7 @@ describe('Python Compatibility', () => {
     });
 
     it('should create from lines', () => {
-      const lines = [
-        new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは')
-      ];
+      const lines = [new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは')];
 
       const script = PSc.fromLines(lines);
       expect(script.lines).toEqual(lines);
@@ -199,9 +218,7 @@ describe('Python Compatibility', () => {
           title: 'テスト台本',
           author: 'テスト作者',
           chars: ['太郎', '花子'],
-          lines: [
-            new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは')
-          ]
+          lines: [new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは')],
         });
 
         const json = script.toJSON();
@@ -210,12 +227,14 @@ describe('Python Compatibility', () => {
           title: 'テスト台本',
           author: 'テスト作者',
           chars: ['太郎', '花子'],
-          lines: [{
-            class: 'PScLine',
-            type: 'DIALOGUE',
-            name: '太郎',
-            text: 'こんにちは'
-          }]
+          lines: [
+            {
+              class: 'PScLine',
+              type: 'DIALOGUE',
+              name: '太郎',
+              text: 'こんにちは',
+            },
+          ],
         });
       });
 
@@ -225,12 +244,14 @@ describe('Python Compatibility', () => {
           title: 'テスト台本',
           author: 'テスト作者',
           chars: ['太郎', '花子'],
-          lines: [{
-            class: 'PScLine',
-            type: 'DIALOGUE',
-            name: '太郎',
-            text: 'こんにちは'
-          }]
+          lines: [
+            {
+              class: 'PScLine',
+              type: 'DIALOGUE',
+              name: '太郎',
+              text: 'こんにちは',
+            },
+          ],
         };
 
         const script = PSc.fromJSON(json);
@@ -246,7 +267,7 @@ describe('Python Compatibility', () => {
       it('should handle missing fields with defaults', () => {
         const json = {
           class: 'PSc',
-          lines: []
+          lines: [],
         };
 
         const script = PSc.fromJSON(json);
@@ -267,13 +288,13 @@ describe('Python Compatibility', () => {
           new PScLine(PScLineType.AUTHOR, undefined, 'テスト作者'),
           new PScLine(PScLineType.DIALOGUE, '太郎', 'こんにちは'),
           new PScLine(PScLineType.DIALOGUE, '花子', 'こんばんは'),
-          new PScLine(PScLineType.EMPTY)
-        ]
+          new PScLine(PScLineType.EMPTY),
+        ],
       });
 
       // Serialize to JSON string (like Python psc_dumps)
       const jsonString = JSON.stringify(original.toJSON());
-      
+
       // Deserialize from JSON string (like Python psc_loads)
       const restored = PSc.fromJSON(JSON.parse(jsonString));
 
@@ -281,7 +302,7 @@ describe('Python Compatibility', () => {
       expect(restored.author).toBe(original.author);
       expect(restored.chars).toEqual(original.chars);
       expect(restored.lines).toHaveLength(original.lines.length);
-      
+
       for (let i = 0; i < original.lines.length; i++) {
         expect(restored.lines[i].type).toBe(original.lines[i].type);
         expect(restored.lines[i].name).toBe(original.lines[i].name);
@@ -292,11 +313,15 @@ describe('Python Compatibility', () => {
 
   describe('linesFromTypesAndTexts', () => {
     it('should create lines from types and texts', () => {
-      const types = [PScLineType.TITLE, PScLineType.AUTHOR, PScLineType.DIALOGUE];
+      const types = [
+        PScLineType.TITLE,
+        PScLineType.AUTHOR,
+        PScLineType.DIALOGUE,
+      ];
       const texts = ['テスト台本', 'テスト作者', '太郎「こんにちは」'];
 
       const lines = linesFromTypesAndTexts(types, texts);
-      
+
       expect(lines).toHaveLength(3);
       expect(lines[0].type).toBe(PScLineType.TITLE);
       expect(lines[0].text).toBe('テスト台本');

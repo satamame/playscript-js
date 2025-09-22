@@ -20,14 +20,22 @@ const script = new PSc({
     new PScLine(PScLineType.CHARACTER, 'ナレーター'),
     new PScLine(PScLineType.EMPTY),
     new PScLine(PScLineType.H1, undefined, '第一場'),
-    new PScLine(PScLineType.DIRECTION, undefined, '舞台は学校の教室。太郎と花子が向かい合って座っている。'),
+    new PScLine(
+      PScLineType.DIRECTION,
+      undefined,
+      '舞台は学校の教室。太郎と花子が向かい合って座っている。'
+    ),
     new PScLine(PScLineType.DIALOGUE, '太郎', 'おはよう、花子さん。'),
     new PScLine(PScLineType.DIALOGUE, '花子', 'おはようございます、太郎くん。'),
     new PScLine(PScLineType.DIRECTION, undefined, '二人は微笑み合う。'),
-    new PScLine(PScLineType.DIALOGUE, 'ナレーター', 'こうして二人の一日が始まった。'),
+    new PScLine(
+      PScLineType.DIALOGUE,
+      'ナレーター',
+      'こうして二人の一日が始まった。'
+    ),
     new PScLine(PScLineType.EMPTY),
-    new PScLine(PScLineType.ENDMARK, undefined, 'THE END')
-  ]
+    new PScLine(PScLineType.ENDMARK, undefined, 'THE END'),
+  ],
 });
 
 console.log('=== TypeScript で作成した台本 ===');
@@ -47,16 +55,18 @@ console.log(restoredScript.toString());
 console.log();
 
 // Verify round-trip compatibility
-const isIdentical = 
+const isIdentical =
   script.title === restoredScript.title &&
   script.author === restoredScript.author &&
   JSON.stringify(script.chars) === JSON.stringify(restoredScript.chars) &&
   script.lines.length === restoredScript.lines.length &&
   script.lines.every((line, i) => {
     const restored = restoredScript.lines[i];
-    return line.type === restored.type &&
-           line.name === restored.name &&
-           line.text === restored.text;
+    return (
+      line.type === restored.type &&
+      line.name === restored.name &&
+      line.text === restored.text
+    );
   });
 
 console.log('=== 互換性検証 ===');
@@ -101,7 +111,7 @@ try {
   console.log('✅ Python 生成 JSON の読み込み成功');
   console.log(pythonScript.toString());
   console.log();
-  
+
   // Show individual lines
   console.log('=== 行の詳細 ===');
   pythonScript.lines.forEach((line, i) => {

@@ -13,15 +13,12 @@
   - _Requirements: 1.1, 1.4_
 
 - [x] 3. JSON シリアライゼーション機能の実装
-
-
-
   - PScLine の toJSON/fromJSON メソッドの実装 (Python 互換形式)
   - PSc の toJSON/fromJSON メソッドの実装 (Python 互換形式)
   - linesFromTypesAndTexts ユーティリティ関数の実装
   - _Requirements: 1.1, 1.4_
 
-- [ ] 4. JFTN パース規則とユーティリティ関数の実装
+- [x] 4. JFTN パース規則とユーティリティ関数の実装
   - JFTN 記法の正規表現パターンと文脈依存ルールの定義
   - 日本語文字判定、見出し判定、セリフ判定などのユーティリティ関数の実装
   - テキスト正規化と日本語処理関数の実装

@@ -5,44 +5,54 @@
 
 // Python PScLineType に対応する列挙型
 export enum PScLineType {
-  TITLE = 0,                   // Title
-  AUTHOR = 1,                  // Author name
-  CHARSHEADLINE = 2,           // Headline of character list
-  CHARACTER = 3,               // Character
-  H1 = 4,                      // Headline of scene (level 1)
-  H2 = 5,                      // Headline of scene (level 2)
-  H3 = 6,                      // Headline of scene (level 3)
-  DIRECTION = 7,               // Direction
-  DIALOGUE = 8,                // Dialogue
-  ENDMARK = 9,                 // End mark
-  COMMENT = 10,                // Comment
-  EMPTY = 11,                  // Empty line
-  CHARACTER_CONTINUED = 12,    // Following lines of Character
-  DIRECTION_CONTINUED = 13,    // Following lines of Direction
-  DIALOGUE_CONTINUED = 14,     // Following lines of Dialogue
-  COMMENT_CONTINUED = 15       // Following lines of Comment
+  TITLE = 0, // Title
+  AUTHOR = 1, // Author name
+  CHARSHEADLINE = 2, // Headline of character list
+  CHARACTER = 3, // Character
+  H1 = 4, // Headline of scene (level 1)
+  H2 = 5, // Headline of scene (level 2)
+  H3 = 6, // Headline of scene (level 3)
+  DIRECTION = 7, // Direction
+  DIALOGUE = 8, // Dialogue
+  ENDMARK = 9, // End mark
+  COMMENT = 10, // Comment
+  EMPTY = 11, // Empty line
+  CHARACTER_CONTINUED = 12, // Following lines of Character
+  DIRECTION_CONTINUED = 13, // Following lines of Direction
+  DIALOGUE_CONTINUED = 14, // Following lines of Dialogue
+  COMMENT_CONTINUED = 15, // Following lines of Comment
 }
 
 // Python PScLine に対応するクラス
 export class PScLine {
   public type: PScLineType;
-  public name?: string;        // 登場人物行、セリフ行の名前部分
-  public text?: string;        // テキスト部分
+  public name?: string; // 登場人物行、セリフ行の名前部分
+  public text?: string; // テキスト部分
 
   constructor(lineType: PScLineType, name?: string, text?: string) {
     this.type = lineType;
 
     // 登場人物行またはセリフ行なら、name 属性が必須
-    if (this.type === PScLineType.CHARACTER || this.type === PScLineType.DIALOGUE) {
+    if (
+      this.type === PScLineType.CHARACTER ||
+      this.type === PScLineType.DIALOGUE
+    ) {
       if (!name) {
-        throw new Error('Argument "name" is required for type CHARACTER or DIALOGUE.');
+        throw new Error(
+          'Argument "name" is required for type CHARACTER or DIALOGUE.'
+        );
       }
     }
 
     // 空行でも登場人物行でもなければ、text 属性が必須
-    if (this.type !== PScLineType.EMPTY && this.type !== PScLineType.CHARACTER) {
+    if (
+      this.type !== PScLineType.EMPTY &&
+      this.type !== PScLineType.CHARACTER
+    ) {
       if (text === undefined || text === null) {
-        throw new Error('Argument "text" is required for the other types than EMPTY or CHARACTER.');
+        throw new Error(
+          'Argument "text" is required for the other types than EMPTY or CHARACTER.'
+        );
       }
     }
 
@@ -51,10 +61,14 @@ export class PScLine {
   }
 
   // Python の from_text メソッドに対応
-  static fromText(lineType: PScLineType, text: string, options?: {
-    defaultName?: string;
-    dlgBrackets?: [string, string];
-  }): PScLine {
+  static fromText(
+    lineType: PScLineType,
+    text: string,
+    options?: {
+      defaultName?: string;
+      dlgBrackets?: [string, string];
+    }
+  ): PScLine {
     const { defaultName = '*', dlgBrackets = ['「', '」'] } = options || {};
 
     text = text.trim();
@@ -101,7 +115,7 @@ export class PScLine {
   toJSON(): any {
     const result: any = {
       class: 'PScLine',
-      type: PScLineType[this.type] // 列挙型の名前を文字列として出力
+      type: PScLineType[this.type], // 列挙型の名前を文字列として出力
     };
     if (this.name !== undefined) result.name = this.name;
     if (this.text !== undefined) result.text = this.text;
@@ -126,8 +140,8 @@ export class PScLine {
 export class PSc {
   public title: string;
   public author: string;
-  public chars: string[];      // 登場人物のリスト
-  public lines: PScLine[];     // 台本行オブジェクトのリスト
+  public chars: string[]; // 登場人物のリスト
+  public lines: PScLine[]; // 台本行オブジェクトのリスト
 
   constructor(options?: {
     title?: string;
@@ -154,7 +168,7 @@ export class PSc {
       title: this.title,
       author: this.author,
       chars: this.chars,
-      lines: this.lines.map(line => line.toJSON())
+      lines: this.lines.map(line => line.toJSON()),
     };
   }
 
@@ -164,7 +178,9 @@ export class PSc {
       title: json.title || '',
       author: json.author || '',
       chars: json.chars || [],
-      lines: (json.lines || []).map((lineJson: any) => PScLine.fromJSON(lineJson))
+      lines: (json.lines || []).map((lineJson: any) =>
+        PScLine.fromJSON(lineJson)
+      ),
     });
   }
 
@@ -174,7 +190,10 @@ export class PSc {
 }
 
 // ユーティリティ関数 - Python の lines_from_types_and_texts に対応
-export function linesFromTypesAndTexts(lineTypes: PScLineType[], texts: string[]): PScLine[] {
+export function linesFromTypesAndTexts(
+  lineTypes: PScLineType[],
+  texts: string[]
+): PScLine[] {
   const lines: PScLine[] = [];
   for (let i = 0; i < Math.min(lineTypes.length, texts.length); i++) {
     const line = PScLine.fromText(lineTypes[i], texts[i]);
@@ -182,8 +201,6 @@ export function linesFromTypesAndTexts(lineTypes: PScLineType[], texts: string[]
   }
   return lines;
 }
-
-
 
 export class ParseError extends Error {
   constructor(
