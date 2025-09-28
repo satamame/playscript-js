@@ -15,6 +15,11 @@ interface ParsingContext {
   hasSeenHeading: boolean;
   hasSeenDialogue: boolean;
   hasSeenCharacterInList: boolean;
+  // 複数行ト書き/コメント管理
+  inDirection: boolean;
+  directionLines: string[];
+  inComment: boolean;
+  commentLines: string[];
 }
 
 export class JftnParser {
@@ -33,6 +38,10 @@ export class JftnParser {
       hasSeenHeading: false,
       hasSeenDialogue: false,
       hasSeenCharacterInList: false,
+      inDirection: false,
+      directionLines: [],
+      inComment: false,
+      commentLines: [],
     };
     this.options = {
       includeEmptyLines: false, // デフォルトでは空行を含めない
@@ -80,11 +89,16 @@ export class JftnParser {
         }
       }
 
-      // 最後にセリフが残っている場合は出力
+      // 最後に保留中の要素が残っている場合は出力
       const finalDialogue = this.finalizePendingDialogue();
-      if (finalDialogue) {
-        pscLines.push(finalDialogue);
-      }
+      const finalDirection = this.finalizePendingDirection();
+      const finalComment = this.finalizePendingComment();
+
+      [finalDialogue, finalDirection, finalComment].forEach(element => {
+        if (element) {
+          pscLines.push(element);
+        }
+      });
 
       // メタデータを抽出
       const metadata = this.parseMetadata(pscLines);
@@ -124,8 +138,10 @@ export class JftnParser {
 
     // 空行
     if (trimmedLine === '') {
-      // セリフ中の場合は終了させる
+      // 保留中の要素を終了させる
       const pendingDialogue = this.finalizePendingDialogue();
+      const pendingDirection = this.finalizePendingDirection();
+      const pendingComment = this.finalizePendingComment();
 
       // 登場人物一覧モードの終了判定
       // 登場人物行を1つでも出力した後の空行で終了
@@ -138,6 +154,8 @@ export class JftnParser {
       if (this.options.includeEmptyLines) {
         // 前の行がト書きまたはコメント行で、かつ次の行もト書きまたはコメント行の場合のみ空行を含める
         const prevIsDirectionOrComment =
+          pendingDirection !== null ||
+          pendingComment !== null ||
           this.context.lastElementType === PScLineType.DIRECTION ||
           this.context.lastElementType === PScLineType.COMMENT;
 
@@ -153,12 +171,22 @@ export class JftnParser {
         ? new PScLine(PScLineType.EMPTY)
         : null;
 
-      if (pendingDialogue && emptyLine) {
-        return [pendingDialogue, emptyLine];
-      } else if (pendingDialogue) {
-        return pendingDialogue;
+      const results = [
+        pendingDialogue,
+        pendingDirection,
+        pendingComment,
+      ].filter((item): item is PScLine => item !== null);
+
+      if (emptyLine) {
+        results.push(emptyLine);
+      }
+
+      if (results.length === 0) {
+        return null;
+      } else if (results.length === 1) {
+        return results[0];
       } else {
-        return emptyLine;
+        return results;
       }
     }
 
@@ -194,8 +222,10 @@ export class JftnParser {
             ? PScLineType.H2
             : PScLineType.H3;
 
-      // 前のセリフがあれば完了させる
+      // 保留中の要素を完了させる
       const previousDialogue = this.finalizePendingDialogue();
+      const previousDirection = this.finalizePendingDirection();
+      const previousComment = this.finalizePendingComment();
 
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
@@ -204,12 +234,14 @@ export class JftnParser {
       this.context.hasSeenHeading = true;
 
       const heading = new PScLine(type, undefined, text);
+      const results = [
+        previousDialogue,
+        previousDirection,
+        previousComment,
+      ].filter((item): item is PScLine => item !== null);
+      results.push(heading);
 
-      if (previousDialogue) {
-        return [previousDialogue, heading];
-      } else {
-        return heading;
-      }
+      return results.length === 1 ? results[0] : results;
     }
 
     // セリフ (@人物名 で始まる行)
@@ -218,8 +250,10 @@ export class JftnParser {
       const character = dialogueMatch[1];
       const text = dialogueMatch[2].trim();
 
-      // 前のセリフがあれば完了させる
+      // 保留中の要素を完了させる
       const previousDialogue = this.finalizePendingDialogue();
+      const previousDirection = this.finalizePendingDirection();
+      const previousComment = this.finalizePendingComment();
 
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
@@ -232,7 +266,12 @@ export class JftnParser {
       this.context.currentDialogueCharacter = character;
       this.context.dialogueLines = text ? [text] : [];
 
-      return previousDialogue;
+      const results = [
+        previousDialogue,
+        previousDirection,
+        previousComment,
+      ].filter((item): item is PScLine => item !== null);
+      return results.length > 0 ? results : null;
     }
 
     // 登場人物 (登場人物一覧内で @ や # で始まらない場合)
@@ -266,8 +305,10 @@ export class JftnParser {
     if (/^>\s*(.*)$/.test(trimmedLine)) {
       const match = /^>\s*(.*)$/.exec(trimmedLine);
 
-      // 前のセリフがあれば完了させる
+      // 保留中の要素を完了させる
       const previousDialogue = this.finalizePendingDialogue();
+      const previousDirection = this.finalizePendingDirection();
+      const previousComment = this.finalizePendingComment();
 
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
@@ -281,11 +322,14 @@ export class JftnParser {
         match ? match[1] : ''
       );
 
-      if (previousDialogue) {
-        return [previousDialogue, endmark];
-      } else {
-        return endmark;
-      }
+      const results = [
+        previousDialogue,
+        previousDirection,
+        previousComment,
+      ].filter((item): item is PScLine => item !== null);
+      results.push(endmark);
+
+      return results.length === 1 ? results[0] : results;
     }
 
     // セリフの継続 (セリフ開始後の行で、@ や # で始まらない場合)
@@ -310,10 +354,45 @@ export class JftnParser {
       (!this.context.hasSeenHeading && !this.context.hasSeenDialogue) ||
       this.context.afterEndmark;
 
+    // 前のセリフがあれば完了させる
+    const previousDialogue = this.finalizePendingDialogue();
+
     if (isComment) {
-      return new PScLine(PScLineType.COMMENT, undefined, trimmedLine);
+      // 前のト書きがあれば完了させる
+      const previousDirection = this.finalizePendingDirection();
+
+      // コメント行の処理
+      if (this.context.inComment) {
+        // 既存のコメントに追加
+        this.context.commentLines.push(trimmedLine);
+        return previousDirection || previousDialogue;
+      } else {
+        // 新しいコメント開始
+        this.context.inComment = true;
+        this.context.commentLines = [trimmedLine];
+        const results = [previousDirection, previousDialogue].filter(
+          (item): item is PScLine => item !== null
+        );
+        return results.length > 0 ? results : null;
+      }
     } else {
-      return new PScLine(PScLineType.DIRECTION, undefined, trimmedLine);
+      // 前のコメントがあれば完了させる
+      const previousComment = this.finalizePendingComment();
+
+      // ト書き行の処理
+      if (this.context.inDirection) {
+        // 既存のト書きに追加
+        this.context.directionLines.push(trimmedLine);
+        return previousComment || previousDialogue;
+      } else {
+        // 新しいト書き開始
+        this.context.inDirection = true;
+        this.context.directionLines = [trimmedLine];
+        const results = [previousComment, previousDialogue].filter(
+          (item): item is PScLine => item !== null
+        );
+        return results.length > 0 ? results : null;
+      }
     }
   }
 
@@ -336,6 +415,38 @@ export class JftnParser {
       this.context.dialogueLines = [];
 
       return dialogue;
+    }
+    return null;
+  }
+
+  finalizePendingDirection(): PScLine | null {
+    if (this.context.inDirection && this.context.directionLines.length > 0) {
+      const directionText = this.context.directionLines.join('\n');
+      const direction = new PScLine(
+        PScLineType.DIRECTION,
+        undefined,
+        directionText
+      );
+
+      // ト書き状態をリセット
+      this.context.inDirection = false;
+      this.context.directionLines = [];
+
+      return direction;
+    }
+    return null;
+  }
+
+  finalizePendingComment(): PScLine | null {
+    if (this.context.inComment && this.context.commentLines.length > 0) {
+      const commentText = this.context.commentLines.join('\n');
+      const comment = new PScLine(PScLineType.COMMENT, undefined, commentText);
+
+      // コメント状態をリセット
+      this.context.inComment = false;
+      this.context.commentLines = [];
+
+      return comment;
     }
     return null;
   }

@@ -40,7 +40,6 @@
 .character {
   margin: 0.5rem 0;
   padding: 0.5rem;
-  background: #f8f9fa;
   border-radius: 4px;
 }
 
@@ -92,7 +91,6 @@
   font-style: italic;
   color: #555;
   padding: 0.5rem;
-  background: #f0f0f0;
   border-radius: 4px;
 }
 
@@ -103,17 +101,14 @@
   font-style: italic;
   padding: 0.5rem;
   border-left: 3px solid #ddd;
-  background: #fafafa;
 }
 
 .endmark {
-  text-align: center;
+  text-align: right;
   font-weight: bold;
   font-size: 1.2em;
   margin: 2rem 0;
   padding: 1rem;
-  border: 2px solid #333;
-  background: #f8f9fa;
 }
 
 .empty-line {
@@ -122,7 +117,6 @@
 
 .unknown-element {
   color: #ff0000;
-  background: #ffe6e6;
   padding: 0.5rem;
   border: 1px solid #ff9999;
   margin: 0.5rem 0;
@@ -143,7 +137,6 @@
 }
 
 .script-container[data-theme="dark"] .character {
-  background: #2a2a2a;
 }
 
 .script-container[data-theme="dark"] .character-description {
@@ -155,19 +148,15 @@
 }
 
 .script-container[data-theme="dark"] .direction {
-  background: #2a2a2a;
   color: #ccc;
 }
 
 .script-container[data-theme="dark"] .comment {
   color: #999;
   border-left-color: #555;
-  background: #222;
 }
 
 .script-container[data-theme="dark"] .endmark {
-  border-color: #666;
-  background: #2a2a2a;
 }
 
 
@@ -196,21 +185,20 @@
 </div>
 <div class="comment">これは台本のプロローグです。</div>
 <h2 class="scene-heading scene-heading-1">シーン1 - 公園</h2>
-<div class="dialogue">
+<div class="dialogue" data-character="太郎">
   <div class="character-name">太郎</div>
   <div class="dialogue-text">こんにちは、花子さん</div>
 </div>
-<div class="dialogue">
+<div class="dialogue" data-character="花子">
   <div class="character-name">花子</div>
   <div class="dialogue-text">あら、太郎さん。こんにちは</div>
 </div>
-<div class="direction">太郎が花子に近づく。</div>
-<div class="direction">二人は公園のベンチに座る。</div>
-<div class="dialogue">
+<div class="direction">太郎が花子に近づく。<br>二人は公園のベンチに座る。</div>
+<div class="dialogue" data-character="太郎">
   <div class="character-name">太郎</div>
   <div class="dialogue-text">今日はいい天気ですね。<br>こんな日は散歩するのが<br>一番気持ちいいですよね。</div>
 </div>
-<div class="dialogue">
+<div class="dialogue" data-character="花子">
   <div class="character-name">花子</div>
   <div class="dialogue-text">そうですね。散歩日和です</div>
 </div>

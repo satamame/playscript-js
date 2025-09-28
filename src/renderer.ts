@@ -101,9 +101,9 @@ ${elements.join('\n')}
       case PScLineType.DIRECTION:
         return this.renderDirection(element, mergedOptions);
       case PScLineType.COMMENT:
-        return this.renderComment(element, mergedOptions);
+        return this.renderComment(element);
       case PScLineType.ENDMARK:
-        return this.renderEndmark(element, mergedOptions);
+        return this.renderEndmark(element);
       case PScLineType.EMPTY:
         return this.renderEmpty();
       default:
@@ -188,26 +188,17 @@ ${elements.join('\n')}
 </div>`;
   }
 
-  private renderDirection(
-    element: PScLine,
-    options: Required<RenderOptions>
-  ): string {
+  private renderDirection(element: PScLine): string {
     const text = this.escapeHtml(element.text || '').replace(/\n/g, '<br>');
     return `<div class="direction">${text}</div>`;
   }
 
-  private renderComment(
-    element: PScLine,
-    options: Required<RenderOptions>
-  ): string {
+  private renderComment(element: PScLine): string {
     const text = this.escapeHtml(element.text || '').replace(/\n/g, '<br>');
     return `<div class="comment">${text}</div>`;
   }
 
-  private renderEndmark(
-    element: PScLine,
-    options: Required<RenderOptions>
-  ): string {
+  private renderEndmark(element: PScLine): string {
     const text = this.escapeHtml(element.text || '');
     return `<div class="endmark">${text}</div>`;
   }
@@ -254,7 +245,6 @@ ${elements.join('\n')}
 .character {
   margin: 0.5rem 0;
   padding: 0.5rem;
-  background: #f8f9fa;
   border-radius: 4px;
 }
 
@@ -306,7 +296,6 @@ ${elements.join('\n')}
   font-style: italic;
   color: #555;
   padding: 0.5rem;
-  background: #f0f0f0;
   border-radius: 4px;
 }
 
@@ -317,17 +306,14 @@ ${elements.join('\n')}
   font-style: italic;
   padding: 0.5rem;
   border-left: 3px solid #ddd;
-  background: #fafafa;
 }
 
 .endmark {
-  text-align: center;
+  text-align: right;
   font-weight: bold;
   font-size: 1.2em;
   margin: 2rem 0;
   padding: 1rem;
-  border: 2px solid #333;
-  background: #f8f9fa;
 }
 
 .empty-line {
@@ -336,7 +322,6 @@ ${elements.join('\n')}
 
 .unknown-element {
   color: #ff0000;
-  background: #ffe6e6;
   padding: 0.5rem;
   border: 1px solid #ff9999;
   margin: 0.5rem 0;
@@ -360,7 +345,6 @@ ${elements.join('\n')}
 }
 
 .script-container[data-theme="dark"] .character {
-  background: #2a2a2a;
 }
 
 .script-container[data-theme="dark"] .character-description {
@@ -372,19 +356,15 @@ ${elements.join('\n')}
 }
 
 .script-container[data-theme="dark"] .direction {
-  background: #2a2a2a;
   color: #ccc;
 }
 
 .script-container[data-theme="dark"] .comment {
   color: #999;
   border-left-color: #555;
-  background: #222;
 }
 
 .script-container[data-theme="dark"] .endmark {
-  border-color: #666;
-  background: #2a2a2a;
 }`;
     }
     return '';
@@ -419,6 +399,7 @@ ${elements.join('\n')}
 
 .script-container[data-writing-mode="vertical"] .endmark {
   text-align: start;
+  align-self: end;
 }`;
     }
     return '';
