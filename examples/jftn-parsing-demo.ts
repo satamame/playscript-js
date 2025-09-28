@@ -7,45 +7,19 @@ import { JftnParser, PScLineType } from '../src/index.js';
 
 console.log('=== JFTN パース機能デモ ===\n');
 
-// 1. 基本的な JFTN 文字列
-const jftnScript = `Title: 短編台本
-Author: 山田太郎
+// 1. JFTN ファイルを読み込み
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-# 登場人物
-太郎: 主人公、20代男性
-花子: ヒロイン、20代女性
+const jftnFilePath = join(
+  import.meta.dirname || __dirname,
+  'sample-script.jftn'
+);
+const jftnScript = readFileSync(jftnFilePath, 'utf8');
 
-これは台本のプロローグです。
-
-# シーン1 - 公園
-
-@太郎
-こんにちは、花子さん
-
-@花子
-あら、太郎さん。こんにちは
-
-太郎が花子に近づく。
-
-二人は公園のベンチに座る。
-
-@太郎
-今日はいい天気ですね。
-こんな日は散歩するのが
-一番気持ちいいですよね。
-
-@花子
-そうですね。散歩日和です
-
-風が吹いて桜の花びらが舞う。
-
-夕日が二人を照らしている。
-
-> THE END
-
-これは奥付です。`;
-
-console.log('1. JFTN 文字列:');
+console.log('1. JFTN ファイル読み込み:');
+console.log(`ファイル: ${jftnFilePath}`);
+console.log('内容:');
 console.log(jftnScript);
 console.log('\n' + '='.repeat(50) + '\n');
 

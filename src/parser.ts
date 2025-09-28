@@ -14,6 +14,7 @@ interface ParsingContext {
   dialogueLines: string[];
   hasSeenHeading: boolean;
   hasSeenDialogue: boolean;
+  hasSeenCharacterInList: boolean;
 }
 
 export class JftnParser {
@@ -31,6 +32,7 @@ export class JftnParser {
       dialogueLines: [],
       hasSeenHeading: false,
       hasSeenDialogue: false,
+      hasSeenCharacterInList: false,
     };
     this.options = {
       includeEmptyLines: false, // デフォルトでは空行を含めない
@@ -125,8 +127,11 @@ export class JftnParser {
       // セリフ中の場合は終了させる
       const pendingDialogue = this.finalizePendingDialogue();
 
-      // 登場人物一覧モードを終了
-      this.context.inCharacterList = false;
+      // 登場人物一覧モードの終了判定
+      // 登場人物行を1つでも出力した後の空行で終了
+      if (this.context.inCharacterList && this.context.hasSeenCharacterInList) {
+        this.context.inCharacterList = false;
+      }
 
       // 空行を含める場合の条件判定
       let shouldIncludeEmptyLine = false;
@@ -173,6 +178,7 @@ export class JftnParser {
     if (/^#\s*登場人物\s*$/.test(trimmedLine)) {
       // 登場人物一覧モードに入る
       this.context.inCharacterList = true;
+      this.context.hasSeenCharacterInList = false;
       return new PScLine(PScLineType.CHARSHEADLINE, undefined, '登場人物');
     }
 
@@ -235,12 +241,24 @@ export class JftnParser {
       !trimmedLine.startsWith('@') &&
       !trimmedLine.startsWith('#')
     ) {
-      // 人物名と説明を分離 (コロンで区切られている場合)
-      const charMatch = /^([^:：]+)[：:]?\s*(.*)$/.exec(trimmedLine);
-      if (charMatch) {
-        const name = charMatch[1].trim();
-        const description = charMatch[2].trim();
-        return new PScLine(PScLineType.CHARACTER, name, description);
+      // 登場人物の形式をより厳密にチェック
+      // 1. 単語のみ（空白を含まない）
+      // 2. 「名前: 説明」の形式
+      const isCharacterFormat = /^[^\s:：]+([：:]\s*.+)?$/.test(trimmedLine);
+
+      if (isCharacterFormat) {
+        // 人物名と説明を分離 (コロンで区切られている場合)
+        const charMatch = /^([^:：]+)[：:]?\s*(.*)$/.exec(trimmedLine);
+        if (charMatch) {
+          const name = charMatch[1].trim();
+          const description = charMatch[2].trim();
+          // 登場人物行を出力したことを記録
+          this.context.hasSeenCharacterInList = true;
+          return new PScLine(PScLineType.CHARACTER, name, description);
+        }
+      } else {
+        // 登場人物の形式に一致しない場合は登場人物一覧モードを終了
+        this.context.inCharacterList = false;
       }
     }
 

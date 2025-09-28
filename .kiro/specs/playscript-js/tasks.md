@@ -24,17 +24,23 @@
   - テキスト正規化と日本語処理関数の実装
   - _Requirements: 4.1, 4.2, 5.1, 5.2_
 
-- [ ] 5. JftnParser クラスの基本実装
+- [x] 5. JftnParser クラスの基本実装
+
   - JftnParser クラスの骨格とコンストラクタの実装
   - parse メソッドの基本構造とメタデータ抽出機能の実装
   - 行単位でのパース処理と PScLine 生成機能の実装
   - _Requirements: 1.1, 1.4_
+
 
 - [ ] 6. 文脈依存パース機能の実装
   - ParsingContext の状態管理機能の実装
   - 登場人物一覧、セリフ、ト書きの文脈依存判定ロジックの実装
   - 空行とエンドマーク後の文脈処理の実装
   - _Requirements: 5.3, 5.4, 5.5_
+
+
+
+
 
 - [ ] 7. ScriptRenderer クラスの基本実装
   - ScriptRenderer クラスと RenderOptions インターフェースの実装
