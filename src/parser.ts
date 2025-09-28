@@ -12,6 +12,8 @@ interface ParsingContext {
   inDialogue: boolean;
   currentDialogueCharacter: string | null;
   dialogueLines: string[];
+  hasSeenHeading: boolean;
+  hasSeenDialogue: boolean;
 }
 
 export class JftnParser {
@@ -27,6 +29,8 @@ export class JftnParser {
       inDialogue: false,
       currentDialogueCharacter: null,
       dialogueLines: [],
+      hasSeenHeading: false,
+      hasSeenDialogue: false,
     };
     this.options = {
       includeEmptyLines: false, // デフォルトでは空行を含めない
@@ -121,6 +125,9 @@ export class JftnParser {
       // セリフ中の場合は終了させる
       const pendingDialogue = this.finalizePendingDialogue();
 
+      // 登場人物一覧モードを終了
+      this.context.inCharacterList = false;
+
       // 空行を含める場合の条件判定
       let shouldIncludeEmptyLine = false;
       if (this.options.includeEmptyLines) {
@@ -187,6 +194,9 @@ export class JftnParser {
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
 
+      // 見出し行が現れたことを記録
+      this.context.hasSeenHeading = true;
+
       const heading = new PScLine(type, undefined, text);
 
       if (previousDialogue) {
@@ -207,6 +217,9 @@ export class JftnParser {
 
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
+
+      // セリフ行が現れたことを記録
+      this.context.hasSeenDialogue = true;
 
       // 新しいセリフを開始
       this.context.inDialogue = true;
@@ -241,6 +254,9 @@ export class JftnParser {
       // 登場人物一覧モードを終了
       this.context.inCharacterList = false;
 
+      // エンドマーク後フラグを設定
+      this.context.afterEndmark = true;
+
       const endmark = new PScLine(
         PScLineType.ENDMARK,
         undefined,
@@ -252,18 +268,6 @@ export class JftnParser {
       } else {
         return endmark;
       }
-    }
-
-    // コメント (// で始まる行)
-    if (trimmedLine.startsWith('//')) {
-      // 登場人物一覧モードを終了
-      this.context.inCharacterList = false;
-
-      return new PScLine(
-        PScLineType.COMMENT,
-        undefined,
-        trimmedLine.substring(2).trim()
-      );
     }
 
     // セリフの継続 (セリフ開始後の行で、@ や # で始まらない場合)
@@ -279,8 +283,20 @@ export class JftnParser {
       return null;
     }
 
-    // その他はト書きとして扱う
-    return new PScLine(PScLineType.DIRECTION, undefined, trimmedLine);
+    // その他はコメント行またはト書き行として扱う
+    // 判定条件:
+    // - まだ見出し行 (登場人物見出しを除く) もセリフ行も現れていないなら、コメント行
+    // - すでにエンドマーク行が現れた後なら、コメント行
+    // - 上記以外なら、ト書き行
+    const isComment =
+      (!this.context.hasSeenHeading && !this.context.hasSeenDialogue) ||
+      this.context.afterEndmark;
+
+    if (isComment) {
+      return new PScLine(PScLineType.COMMENT, undefined, trimmedLine);
+    } else {
+      return new PScLine(PScLineType.DIRECTION, undefined, trimmedLine);
+    }
   }
 
   finalizePendingDialogue(): PScLine | null {
@@ -357,21 +373,16 @@ export class JftnParser {
   private isDirectionOrComment(line: string): boolean {
     if (!line) return false;
 
-    // コメント行
-    if (line.startsWith('//')) {
-      return true;
-    }
-
-    // 以下の場合はト書きではない
+    // 以下の場合はト書きでもコメントでもない
     if (line.startsWith('Title:') || line.startsWith('Author:')) return false;
     if (line.startsWith('#')) return false;
     if (line.startsWith('@')) return false;
     if (line.startsWith('>')) return false;
 
-    // 登場人物一覧内の場合は、登場人物行かもしれないのでト書きではない
+    // 登場人物一覧内の場合は、登場人物行かもしれないのでト書きでもコメントでもない
     if (this.context.inCharacterList) return false;
 
-    // その他はト書きとして扱う
+    // その他はト書きまたはコメント行として扱う
     return true;
   }
 }
