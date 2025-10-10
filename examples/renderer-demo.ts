@@ -96,13 +96,19 @@ console.log();
 // 7. HTML ファイルとして出力
 console.log('7. HTML ファイル出力');
 import { writeFileSync } from 'fs';
+let htmlFilePath: string;
 
 try {
-  writeFileSync('output-demo.html', html, 'utf8');
-  console.log('✅ output-demo.html に出力しました');
+  htmlFilePath = join(import.meta.dirname || __dirname, 'out/render.html');
+  writeFileSync(htmlFilePath, html, 'utf8');
+  console.log(`✅ ${htmlFilePath} に出力しました`);
 
-  writeFileSync('output-custom.html', customHtml, 'utf8');
-  console.log('✅ output-custom.html に出力しました');
+  htmlFilePath = join(
+    import.meta.dirname || __dirname,
+    'out/render-custom.html'
+  );
+  writeFileSync(htmlFilePath, customHtml, 'utf8');
+  console.log(`✅ ${htmlFilePath} に出力しました`);
 } catch (error) {
   console.log('❌ ファイル出力エラー:', error);
 }
