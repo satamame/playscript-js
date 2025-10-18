@@ -1,0 +1,117 @@
+/* Base Styles */
+.script-container {
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: transparent;
+  color: #111;
+}
+
+.script-title {
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+}
+
+.script-author {
+  text-align: center;
+  font-size: 1.1em;
+  margin: 0 0 2rem 0;
+  color: #666;
+}
+
+.characters-headline {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+.character {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.character-name {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.character-description {
+  color: #666;
+}
+
+.scene-heading {
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  padding: 0.5rem 0;
+}
+
+.scene-heading-1 {
+  font-size: 1.4em;
+  border-bottom: 1px solid #333;
+}
+
+.scene-heading-2 {
+  font-size: 1.2em;
+}
+
+.scene-heading-3 {
+  font-size: 1.1em;
+}
+
+.dialogue {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.dialogue .character-name {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.dialogue-text {
+  margin-left: 1rem;
+}
+
+.direction {
+  margin: 1rem 0;
+  font-style: italic;
+  color: #555;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.comment {
+  margin: 1rem 0;
+  font-size: 0.9em;
+  color: #888;
+  font-style: italic;
+  padding: 0.5rem;
+  border-left: 3px solid #ddd;
+}
+
+.endmark {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 2rem 0;
+  padding: 1rem;
+}
+
+.empty-line {
+  height: 1em;
+}
+
+.unknown-element {
+  color: #ff0000;
+  padding: 0.5rem;
+  border: 1px solid #ff9999;
+  margin: 0.5rem 0;
+}

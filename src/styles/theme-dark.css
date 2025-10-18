@@ -1,0 +1,43 @@
+/* Dark Theme */
+.script-container[data-theme='dark'] {
+  background: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.script-container[data-theme='dark'][data-writing-mode='vertical'] {
+  background: #2a2520;
+}
+
+.script-container[data-theme='dark'] .script-author {
+  color: #aaa;
+}
+
+.script-container[data-theme='dark'] .characters-headline {
+  border-bottom-color: #666;
+  border-right-color: #666;
+}
+
+.script-container[data-theme='dark'] .character-description {
+  color: #aaa;
+}
+
+.script-container[data-theme='dark'] .scene-heading-1 {
+  border-color: #666;
+  background: rgba(42, 37, 32, 0.8);
+}
+
+.script-container[data-theme='dark'] .scene-heading-2,
+.script-container[data-theme='dark'] .scene-heading-3 {
+  border-bottom-color: #666;
+  border-right-color: #666;
+}
+
+.script-container[data-theme='dark'] .direction {
+  color: #ccc;
+}
+
+.script-container[data-theme='dark'] .comment {
+  color: #999;
+  border-left-color: #555;
+  border-right-color: #555;
+}

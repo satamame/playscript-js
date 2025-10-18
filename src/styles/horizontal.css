@@ -1,0 +1,8 @@
+/* Horizontal Writing Mode Styles */
+.script-container[data-writing-mode='horizontal'] {
+  font-family:
+    'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+  background: transparent;
+}
+
+/* 横書き専用のスタイルがあればここに追加 */

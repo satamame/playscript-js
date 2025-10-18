@@ -1,0 +1,9 @@
+/* Light Theme */
+.script-container[data-theme='light'] {
+  background: transparent;
+  color: #111;
+}
+
+.script-container[data-theme='light'][data-writing-mode='vertical'] {
+  background: #fffef8;
+}

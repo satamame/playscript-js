@@ -1,0 +1,155 @@
+/* Vertical Writing Mode Styles */
+.script-container[data-writing-mode='vertical'] {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  max-width: 56ch; /* 縦書きでは列幅を制限 */
+  min-height: 100vh; /* ページの下端まで高さを確保 */
+  overflow-x: auto;
+  padding: 4rem 1.5rem 1.5rem 1.5rem; /* 上部にメモ書き用の余白を追加 */
+  -webkit-font-feature-settings: 'palt'; /* 和欧混植の微調整 */
+  box-sizing: border-box;
+  font-family: 'Hiragino Mincho Pro', 'Yu Mincho', 'MS Mincho', 'serif';
+  background: #fffef8;
+}
+
+/* ヘッダー要素 */
+.script-container[data-writing-mode='vertical'] .script-title,
+.script-container[data-writing-mode='vertical'] .script-author {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.script-container[data-writing-mode='vertical'] .script-title {
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+}
+
+.script-container[data-writing-mode='vertical'] .script-author {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* セリフ：人物名をテキストの1行目の真上に配置 */
+.script-container[data-writing-mode='vertical'] .dialogue {
+  position: relative;
+  margin-bottom: 1.2rem;
+  padding-right: 0.5rem;
+  padding-left: 0;
+}
+
+.script-container[data-writing-mode='vertical'] .character-name {
+  position: absolute;
+  top: 0;
+  right: 0; /* テキストの1行目と右端を合わせる */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-weight: 700;
+  font-size: 0.95rem;
+  width: auto;
+  text-align: center;
+  color: #222;
+  margin-bottom: 0;
+  text-transform: none; /* 大文字変換を無効化 */
+  transform: translateY(-100%); /* 名前をテキストの上に配置 */
+  padding-bottom: 0.3rem;
+}
+
+.script-container[data-writing-mode='vertical'] .dialogue-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 1rem;
+  white-space: pre-wrap; /* 改行を反映 */
+  margin-left: 0;
+  margin-right: 0;
+  padding-top: 1.5rem; /* 人物名のスペースを確保 */
+}
+
+/* ト書き：舞台指示として中央寄せ */
+.script-container[data-writing-mode='vertical'] .direction {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+  margin: 1rem 0;
+  font-style: italic;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+/* コメント：注釈として小さめ表示 */
+.script-container[data-writing-mode='vertical'] .comment {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.8rem;
+  color: #777;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-left: none;
+  border-right: 3px solid #ddd;
+}
+
+/* 登場人物一覧 */
+.script-container[data-writing-mode='vertical'] .characters-headline {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  border-bottom: none;
+  border-right: 2px solid #333;
+  padding-bottom: 0;
+  padding-right: 0.5rem;
+}
+
+.script-container[data-writing-mode='vertical'] .character {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+/* 見出し：罫線で囲む */
+.script-container[data-writing-mode='vertical'] .scene-heading-1 {
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  padding: 0.8rem;
+  margin: 2rem 0 1rem 0;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.script-container[data-writing-mode='vertical'] .scene-heading-2,
+.script-container[data-writing-mode='vertical'] .scene-heading-3 {
+  border-bottom: none;
+  border-right: 1px solid #666;
+  padding-right: 0.5rem;
+}
+
+/* エンドマーク */
+.script-container[data-writing-mode='vertical'] .endmark {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 2rem 0;
+  padding: 1rem;
+}
+
+/* 印刷対応 */
+@media print {
+  .script-container[data-writing-mode='vertical'] {
+    padding: 0.5cm;
+    max-width: 48ch;
+  }
+}
+
+/* スマホ対応 */
+@media (max-width: 520px) {
+  .script-container[data-writing-mode='vertical'] {
+    font-size: 16px;
+    max-width: 44ch;
+  }
+
+  .script-container[data-writing-mode='vertical'] .character-name {
+    width: 1.8rem;
+    font-size: 0.9rem;
+  }
+}

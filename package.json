@@ -1,20 +1,18 @@
 {
   "name": "playscript-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A TypeScript library for parsing and rendering Japanese Fountain (JFTN) screenplay format",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-css",
+    "copy-css": "powershell -Command \"New-Item -ItemType Directory -Force -Path dist/styles; Copy-Item -Path src/styles/* -Destination dist/styles/ -Recurse -Force\"",
     "test": "jest",
     "dev": "tsc --watch",
     "lint": "eslint src/**/*.ts tests/**/*.ts examples/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts examples/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts tests/**/*.ts examples/**/*.ts",
-    "example:jftn": "tsx examples/jftn-parsing-demo.ts",
-    "example:json": "tsx examples/json-compatibility-demo.ts",
-    "example:python": "tsx examples/python-compatibility-demo.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
