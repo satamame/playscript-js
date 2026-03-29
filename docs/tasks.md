@@ -38,10 +38,6 @@
   - 空行とエンドマーク後の文脈処理の実装
   - _Requirements: 5.3, 5.4, 5.5_
 
-
-
-
-
 - [ ] 7. ScriptRenderer クラスの基本実装
   - ScriptRenderer クラスと RenderOptions インターフェースの実装
   - 基本的な HTML 構造生成と CSS 生成機能の実装
@@ -49,12 +45,21 @@
   - _Requirements: 2.1, 2.2, 3.1_
 
 - [x] 8. 日本語特有のレンダリング機能の実装
-
-
   - 縦書き・横書き切り替え機能と CSS writing-mode 対応の実装
   - 日本語フォント指定と文字間隔調整機能の実装
   - 縦書き用記号変換と数字の縦中横処理の実装
   - _Requirements: 2.1, 2.2, 2.4_
+
+- [ ] 8a. HTML/CSS 分離の徹底 (issue #1)
+  - `RenderOptions` の `customCSS: string` を `cssSource?: CSSSource | CSSSource[]` に変更する
+    - `type CSSSource = 'default' | { css: string } | { file: string }`
+  - `RenderOptions` からスタイリング関連フィールド (`fontSize`、`fontFamily`、`lineHeight`、`theme`) を削除する
+  - `RenderOptions` に `dialogueBrackets?: boolean` と `sceneNumbers?: boolean` を追加する (縦書き依存の暗黙的な挙動を明示的なオプションに置き換える)
+  - `src/styles/default-horizontal.css` と `src/styles/default-vertical.css` を作成し、現在の base.css / horizontal.css / vertical.css / theme-*.css のデフォルトスタイルを統合する
+  - `cssSource: 'default'` のとき `writingMode` に応じていずれかを選択するよう `generateCSS()` を実装し直す
+  - `writingMode` は `data-writing-mode` 属性として HTML に付与し、カスタム CSS からセレクタとして利用可能にする
+  - 上記変更に合わせてレンダラーのテストを更新する
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 6.4_
 
 - [ ] 9. 軽量版 PDF レンダラーの実装
   - LightweightPdfRenderer クラスの実装 (PDFKit 使用)

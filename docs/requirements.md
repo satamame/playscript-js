@@ -30,13 +30,18 @@
 
 ### Requirement 3
 
-**User Story:** 開発者として、HTML レンダリングの表示設定をカスタマイズしたい。そうすることで、アプリケーションの要件に合わせた表示スタイルを適用できる。
+**User Story:** 開発者として、HTML レンダリングの CSS をカスタマイズしたい。そうすることで、アプリケーションの要件に合わせた表示スタイルを適用できる。
 
 #### Acceptance Criteria
 
-1. WHEN RenderOptions が指定される THEN システムはフォントサイズ、フォントファミリー、行間の設定を適用する SHALL
-2. WHEN 縦書き・横書きが指定される THEN システムは適切な CSS writing-mode を生成する SHALL
-3. WHEN テーマが指定される THEN システムはライト・ダークテーマに対応した CSS を生成する SHALL
+1. WHEN `cssSource` に `'default'` が指定される THEN システムはパッケージ同梱の `default.css` を適用する SHALL
+2. WHEN `cssSource` に CSS 文字列 `{ css: string }` が指定される THEN システムはその CSS を適用する SHALL
+3. WHEN `cssSource` に CSS ファイルパス `{ file: string }` が指定される THEN システムはそのファイルを読み込んで適用する SHALL
+4. WHEN `cssSource` に配列が指定される THEN システムは配列の順に CSS を結合して適用する SHALL
+5. WHEN 縦書き・横書きが指定される THEN システムは `data-writing-mode` 属性を HTML に付与し、適切な CSS writing-mode を反映する SHALL
+6. WHEN `cssSource: 'default'` が指定される THEN システムは `writingMode` に応じて `default-horizontal.css` または `default-vertical.css` を適用する SHALL
+6. WHEN `dialogueBrackets: true` が指定される THEN システムはセリフテキストをカギ括弧で囲む SHALL
+7. WHEN `sceneNumbers: true` が指定される THEN システムは H1 見出しに連番を付与する SHALL
 
 ### Requirement 4
 
@@ -70,4 +75,4 @@
 1. WHEN HTML レンダリングが実行される THEN システムは完全な HTML ドキュメントを生成する SHALL
 2. WHEN HTML が生成される THEN システムは日本語フォントを指定した CSS を含める SHALL
 3. WHEN レンダリングオプションが指定される THEN システムは指定されたスタイル設定を適用する SHALL
-4. WHEN カスタム CSS が指定される THEN システムは追加のスタイルを適用する SHALL
+4. WHEN `cssSource` が指定される THEN システムは指定された CSS ソースを適用する SHALL
