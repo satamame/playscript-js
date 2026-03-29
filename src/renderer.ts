@@ -52,18 +52,20 @@ export class ScriptRenderer {
     const css = mergedOptions.includeCSS ? this.generateCSS(mergedOptions) : '';
     const body = this.renderBody(script, mergedOptions);
 
-    return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${script.title || '台本'}</title>
-  ${css ? `<style>\n${css}\n</style>` : ''}
-</head>
-<body>
-${body}
-</body>
-</html>`;
+    return [
+      '<!DOCTYPE html>',
+      '<html lang="ja">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      `  <title>${script.title || '台本'}</title>`,
+      css ? `  <style>\n${css}\n  </style>` : '',
+      '</head>',
+      '<body>',
+      body,
+      '</body>',
+      '</html>',
+    ].filter(Boolean).join('\n');
   }
 
   /**
@@ -74,9 +76,11 @@ ${body}
       this.renderElement(line, options)
     );
 
-    return `<div class="script-container" data-writing-mode="${options.writingMode}" data-theme="${options.theme}">
-${elements.join('\n')}
-</div>`;
+    return [
+      `<div class="script-container" data-writing-mode="${options.writingMode}" data-theme="${options.theme}">`,
+      elements.join('\n'),
+      '</div>',
+    ].join('\n');
   }
 
   /**
@@ -177,10 +181,12 @@ ${elements.join('\n')}
     const name = this.escapeHtml(element.name || '');
     const description = this.escapeHtml(element.text || '');
 
-    return `<div class="character">
-  <span class="character-name">${name}</span>
-  ${description ? `<span class="character-description">${description}</span>` : ''}
-</div>`;
+    return [
+      '<div class="character">',
+      `  <span class="character-name">${name}</span>`,
+      description ? `  <span class="character-description">${description}</span>` : '',
+      '</div>',
+    ].filter(Boolean).join('\n');
   }
 
   private renderHeading(
@@ -211,10 +217,12 @@ ${elements.join('\n')}
     if (options.writingMode === 'vertical') {
       text = `「${text}」`;
     }
-    return `<div class="dialogue" data-character="${character}">
-  <div class="character-name">${character}</div>
-  <div class="dialogue-text">${text}</div>
-</div>`;
+    return [
+      `<div class="dialogue" data-character="${character}">`,
+      `  <div class="character-name">${character}</div>`,
+      `  <div class="dialogue-text">${text}</div>`,
+      '</div>',
+    ].join('\n');
   }
 
   private renderDirection(element: PScLine): string {
