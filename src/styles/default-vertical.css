@@ -1,0 +1,172 @@
+/* Default Vertical Writing Mode Styles */
+
+.script-container {
+  font-family: 'Hiragino Mincho Pro', 'Yu Mincho', 'MS Mincho', serif;
+  font-size: 16px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  max-width: 56ch;
+  min-height: 100vh;
+  overflow-x: auto;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 1.5rem 1.5rem;
+  background: #fffef8;
+  color: #111;
+  line-height: 1.8;
+  -webkit-font-feature-settings: 'palt';
+  box-sizing: border-box;
+}
+
+.script-title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem 0;
+}
+
+.script-author {
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 0 0 2rem 0;
+  color: #555;
+}
+
+.characters-headline {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  border-right: 2px solid #333;
+  padding-right: 0.5rem;
+}
+
+.character {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.character-name {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.character-description {
+  color: #666;
+}
+
+.scene-heading {
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  padding: 0.5rem 0;
+}
+
+.scene-heading-1 {
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  padding: 0.8rem;
+  margin: 2rem 0 1rem 0;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.scene-heading-2,
+.scene-heading-3 {
+  border-right: 1px solid #666;
+  padding-right: 0.5rem;
+}
+
+.dialogue {
+  position: relative;
+  margin-bottom: 1.2rem;
+  padding-right: 0.5rem;
+  padding-left: 0;
+}
+
+.dialogue .character-name {
+  position: absolute;
+  top: 0;
+  right: 0;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-weight: 700;
+  font-size: 0.95rem;
+  width: auto;
+  text-align: center;
+  color: #222;
+  margin-bottom: 0;
+  text-transform: none;
+  transform: translateY(-100%);
+  padding-bottom: 0.3rem;
+}
+
+.dialogue-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  margin-left: 0;
+  margin-right: 0;
+  padding-top: 1.5rem;
+}
+
+.direction {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+  margin: 1rem 0;
+  font-style: italic;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.comment {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.8rem;
+  color: #777;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  border-right: 3px solid #ddd;
+}
+
+.endmark {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 2rem 0;
+  padding: 1rem;
+}
+
+.empty-line {
+  height: 1em;
+}
+
+.unknown-element {
+  color: #ff0000;
+  padding: 0.5rem;
+  border: 1px solid #ff9999;
+  margin: 0.5rem 0;
+}
+
+@media print {
+  .script-container {
+    padding: 0.5cm;
+    max-width: 48ch;
+  }
+}
+
+@media (max-width: 520px) {
+  .script-container {
+    font-size: 16px;
+    max-width: 44ch;
+  }
+
+  .dialogue .character-name {
+    width: 1.8rem;
+    font-size: 0.9rem;
+  }
+}

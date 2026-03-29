@@ -1,16 +1,16 @@
 import { PSc, PScLine, PScLineType } from './types';
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, isAbsolute } from 'path';
 import { fileURLToPath } from 'url';
+
+export type CSSSource = 'default' | { css: string } | { file: string };
 
 export interface RenderOptions {
   writingMode?: 'horizontal' | 'vertical';
-  fontSize?: number;
-  fontFamily?: string;
-  lineHeight?: number;
-  theme?: 'light' | 'dark';
+  cssSource?: CSSSource | CSSSource[];
   includeCSS?: boolean;
-  customCSS?: string;
+  dialogueBrackets?: boolean;
+  sceneNumbers?: boolean;
 }
 
 export class ScriptRenderer {
@@ -18,23 +18,20 @@ export class ScriptRenderer {
   private readonly __dirname: string;
   private defaultOptions: Required<RenderOptions> = {
     writingMode: 'horizontal',
-    fontSize: 16,
-    fontFamily:
-      '"Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif',
-    lineHeight: 1.8,
-    theme: 'light',
+    cssSource: 'default',
     includeCSS: true,
-    customCSS: '',
+    dialogueBrackets: false,
+    sceneNumbers: false,
   };
 
   constructor() {
-    // ES moduleで__dirnameを取得
+    // ES module で __dirname を取得
     const __filename = fileURLToPath(import.meta.url);
     this.__dirname = dirname(__filename);
   }
 
   /**
-   * 台本を HTML として レンダリング
+   * 台本を HTML としてレンダリング
    */
   render(script: PSc, options?: RenderOptions): string {
     return this.renderToHTML(script, options);
@@ -77,7 +74,7 @@ export class ScriptRenderer {
     );
 
     return [
-      `<div class="script-container" data-writing-mode="${options.writingMode}" data-theme="${options.theme}">`,
+      `<div class="script-container" data-writing-mode="${options.writingMode}">`,
       elements.join('\n'),
       '</div>',
     ].join('\n');
@@ -126,39 +123,62 @@ export class ScriptRenderer {
    * CSS を生成
    */
   generateCSS(options?: RenderOptions): string {
-    const mergedOptions = {
-      ...this.defaultOptions,
-      ...options,
-    };
+    const mergedOptions = { ...this.defaultOptions, ...options };
+    const sources = Array.isArray(mergedOptions.cssSource)
+      ? mergedOptions.cssSource
+      : [mergedOptions.cssSource];
 
-    const baseCSS = this.loadCSSFile('base.css');
-    const writingModeCSS = this.loadCSSFile(
-      mergedOptions.writingMode === 'vertical'
-        ? 'vertical.css'
-        : 'horizontal.css'
-    );
-    const themeCSS = this.loadCSSFile(`theme-${mergedOptions.theme}.css`);
-    const customCSS = mergedOptions.customCSS;
-
-    return [baseCSS, writingModeCSS, themeCSS, customCSS]
+    return sources
+      .map(source => this.resolveCSSSource(source, mergedOptions.writingMode))
       .filter(css => css.trim())
       .join('\n\n');
   }
 
+  private resolveCSSSource(
+    source: CSSSource,
+    writingMode: 'horizontal' | 'vertical'
+  ): string {
+    if (source === 'default') {
+      const filename =
+        writingMode === 'vertical'
+          ? 'default-vertical.css'
+          : 'default-horizontal.css';
+      return this.loadBundledCSS(filename);
+    }
+    if ('css' in source) {
+      return source.css;
+    }
+    if ('file' in source) {
+      return this.loadExternalCSS(source.file);
+    }
+    return '';
+  }
+
   /**
-   * CSSファイルを読み込み
+   * パッケージ同梱の CSS ファイルを読み込む
    */
-  private loadCSSFile(filename: string): string {
+  private loadBundledCSS(filename: string): string {
+    // this.__dirname は dist ディレクトリを指すので、そこから styles フォルダを探す
+    const cssPath = join(this.__dirname, 'styles', filename);
     try {
-      // this.__dirname は dist ディレクトリを指すので、そこから styles フォルダを探す
-      const cssPath = join(this.__dirname, 'styles', filename);
-      const css = readFileSync(cssPath, 'utf-8');
-      return css;
+      return readFileSync(cssPath, 'utf-8');
     } catch {
-      // ファイルが見つからない場合は警告を出すが、処理は続行
-      console.warn(
-        `CSS file not found: ${filename} (${join(this.__dirname, 'styles', filename)})`
-      );
+      console.warn(`Bundled CSS file not found: ${cssPath}`);
+      return '';
+    }
+  }
+
+  /**
+   * 外部 CSS ファイルを読み込む
+   */
+  private loadExternalCSS(filePath: string): string {
+    const resolvedPath = isAbsolute(filePath)
+      ? filePath
+      : join(process.cwd(), filePath);
+    try {
+      return readFileSync(resolvedPath, 'utf-8');
+    } catch {
+      console.warn(`CSS file not found: ${resolvedPath}`);
       return '';
     }
   }
@@ -194,12 +214,9 @@ export class ScriptRenderer {
     options: Required<RenderOptions>,
     level: number
   ): string {
-    // レベル1の見出しに連番を追加
     let text = element.text || '';
-    if (level === 1 && options.writingMode === 'vertical') {
-      // 既に番号が付いていない場合のみ追加
+    if (level === 1 && options.sceneNumbers) {
       if (!text.match(/^\d+[.\-\s]/)) {
-        // 簡単な連番実装（実際のプロジェクトではより高度な管理が必要）
         const sceneNumber = this.getSceneNumber();
         text = `${sceneNumber}. ${text}`;
       }
@@ -213,8 +230,7 @@ export class ScriptRenderer {
   ): string {
     const character = this.escapeHtml(element.name || '');
     let text = this.escapeHtml(element.text || '').replace(/\n/g, '<br>');
-    // 縦書きの場合はカギ括弧で括る
-    if (options.writingMode === 'vertical') {
+    if (options.dialogueBrackets) {
       text = `「${text}」`;
     }
     return [
