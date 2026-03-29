@@ -100,7 +100,6 @@ lib-cov
 coverage
 
 # Editors
-.vscode/
 .idea/
 *.swp
 *.swo
